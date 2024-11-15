@@ -1,23 +1,19 @@
 # ConvMatch implementation
 
-Pytorch implementation of ConvMatch for TPAMI'24 paper ["ConvMatch: Rethinking Network Design for Two-View Correspondence Learning"](https://ieeexplore.ieee.org/abstract/document/10323178), by [Shihua Zhang](https://scholar.google.com/citations?user=7f_tYK4AAAAJ&hl) and [Jiayi Ma](https://scholar.google.com/citations?user=73trMQkAAAAJ&hl).
+Pytorch implementation of ConvMatch for AAAI'23 paper ["ConvMatch: Rethinking Network Design for Two-View Correspondence Learning"](https://ojs.aaai.org/index.php/AAAI/article/view/25456), by [Shihua Zhang](https://scholar.google.com/citations?user=7f_tYK4AAAAJ&hl) and [Jiayi Ma](https://scholar.google.com/citations?user=73trMQkAAAAJ&hl).
 
-This paper focuses on establishing correspondences between two images. We design a correspondence learning network called ConvMatch that for the first time can leverage convolutional neural network (CNN) as the backbone to capture better context, thus avoiding the complex design of extra blocks. Specifically, with the observation that sparse motion vectors and dense motion field can be converted into each other with interpolating and sampling, we regularize the putative motion vectors by estimating dense motion field implicitly, then rectify the errors caused by outliers in local areas with CNN, and finally obtain correct motion vectors from the rectified motion field. Rather than simply stacking general CNN networks in the [conference version](https://ojs.aaai.org/index.php/AAAI/article/view/25456), we design special structures for two-view correspondence learning to directly capture global information and to preserve the true vast discontinuities in the motion field, respectively.
+This paper focuses on establishing correspondences between two images. We design a correspondence learning network called ConvMatch that for the first time can leverage convolutional neural network (CNN) as the backbone to capture better context, thus avoiding the complex design of extra blocks. Specifically, with the observation that sparse motion vectors and dense motion field can be converted into each other with interpolating and sampling, we regularize the putative motion vectors by estimating dense motion field implicitly, then rectify the errors caused by outliers in local areas with CNN, and finally obtain correct motion vectors from the rectified motion field.
 
-This repo contains the code and data for relative pose estimation on outlier rejection methods described in our TPAMI paper.
+This repo contains the code and data for essential matrix estimation described in our AAAI paper. You can switch to branch "convmatch_plus" to view the code of the expanded version published in [TPAMI'24](https://ieeexplore.ieee.org/abstract/document/10323178).
 
 If you find this project useful, please cite:
 
 ```
-@article{zhang2023convmatch,
-  title={Convmatch: Rethinking network design for two-view correspondence learning},
+@inproceedings{zhang2023convmatch,
+  title={ConvMatch: Rethinking Network Design for Two-View Correspondence Learning},
   author={Zhang, Shihua and Ma, Jiayi},
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  year={2024},
-  volume={46},
-  number={5},
-  pages={2920-2935},
-  publisher={IEEE}
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  year={2023}
 }
 ```
 
@@ -34,9 +30,8 @@ For a quick start, clone the repo and download the pretrained model.
 ```bash
 git clone https://github.com/SuhZhang/ConvMatch 
 cd ConvMatch 
-git checkout convmatch_plus
 ```
-Then download the pretrained models from [here](https://drive.google.com/drive/folders/1v7mvavE30vmG-WTUwFA3bAt6ElPosIBq?usp=sharing).
+Then download the pretrained models from [here](https://drive.google.com/drive/folders/1JKuIWhMXe9ve3wRPb_xZmX37ZH1bxAC3).
 
 Then run the feature matching with demo ConvMatch.
 
@@ -94,9 +89,9 @@ You can change the default settings for network structure and training process i
 
 ### Train with your own local feature or data 
 
-The provided models are trained using SIFT. You had better retrain the model if you want to use ConvMatch with your own local feature, such as RootSIFT, SuperPoint and etc. 
+The provided models are trained using SIFT. You had better retrain the model if you want to use ConvMatch with your own local feature, such as RootSIFT, SuperPoint, etc. 
 
-You can follow the provided example scirpts in `./dump_match` to generate dataset for your own local feature or data.
+You can follow the provided example scripts in `./dump_match` to generate dataset for your own local feature or data.
 
 ## Acknowledgement
 This code is borrowed from [OANet](https://github.com/zjhthu/OANet) and [CLNet](https://github.com/sailor-z/CLNet). If using the part of code related to data generation, testing and evaluation, please cite these papers.

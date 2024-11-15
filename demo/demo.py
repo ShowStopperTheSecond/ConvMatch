@@ -52,7 +52,7 @@ def draw_matching(img1, img2, pt1, pt2):
 
 class ExtractSIFT(object):
     def __init__(self, num_kp, contrastThreshold=1e-5):
-        self.sift = cv2.SIFT_create(nfeatures=num_kp, contrastThreshold=contrastThreshold)
+        self.sift = cv2.xfeatures2d.SIFT_create(nfeatures=num_kp, contrastThreshold=contrastThreshold)
         self.num_kp = num_kp
     def run(self, img):
         img = img.astype(np.uint8)
