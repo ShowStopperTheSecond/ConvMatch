@@ -24,7 +24,7 @@ parser.add_argument('--suffix', type=str, default='sift-2000',
 
 class ExtractSIFT(object):
   def __init__(self, num_kp, contrastThreshold=1e-5):
-    self.sift = cv2.xfeatures2d.SIFT_create(nfeatures=num_kp, contrastThreshold=contrastThreshold)
+    self.sift = cv2.SIFT_create(nfeatures=num_kp, contrastThreshold=contrastThreshold)
 
   def run(self, img_path):
     img = cv2.imread(img_path)
