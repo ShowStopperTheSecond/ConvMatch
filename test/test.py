@@ -107,7 +107,10 @@ def test(config):
     thresholds = [5, 10, 20]
     aucs = pose_auc(pose_errors, thresholds)
     aucs = [100.*yy for yy in aucs]
-    precision, recall, f_scores = np.mean(np.asarray(precision_all))*100, np.mean(np.asarray(recall_all))*100, np.mean(np.asarray(f_scores_all))*100
+    # Bug: for some pairs, Precision, reacall and f_score are all zero and the values are formated in a inhomogenous tensor [0.] which doesn't work with mean 
+    # Therefore I raveled the tensors and then performed the averaging 
+    # Fix later
+    precision, recall, f_scores = torch.ravel(torch.tensor(precision_all)).ravel().mean()*100, torch.ravel(torch.tensor(recall_all)).ravel().mean()*100, torch.ravel(torch.tensor(f_scores_all)).ravel().mean()*100
 
     print('Evaluation Results (mean over {} pairs):'.format(len(test_loader)))
     print('AUC@5\t AUC@10\t AUC@20\t')
