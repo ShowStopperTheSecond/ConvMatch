@@ -99,7 +99,6 @@ if __name__ == "__main__":
     detector = ExtractBRISK()
   else:
     print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
-    return -1
 
   # get image lists
   search = os.path.join(opt.input_path, opt.img_glob)
