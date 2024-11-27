@@ -239,6 +239,10 @@ if __name__ == "__main__":
     detector = DoubleDesc(cv2.ORB_create(), cv2.BRISK_create())
   elif opt.feature_extractor == "orb_sift":
     detector = DoubleDesc(cv2.ORB_create(), cv2.SIFT_create())
+  elif opt.feature_extractor == "double_aliked":
+    pass
+  elif opt.feature_extractor == "triple_aliked":
+    pass
   else:
     print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
 

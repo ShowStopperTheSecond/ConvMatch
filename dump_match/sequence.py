@@ -7,13 +7,14 @@ import pickle
 import cv2
 import itertools
 from six.moves import xrange
-from feature_match import computeNN
+from feature_match import computeNN, multi_sub_desc_match
 from utils import saveh5, loadh5
 from geom import load_geom, parse_geom, get_episym
 from transformations import quaternion_from_matrix
 
 class Sequence(object):
-    def __init__(self, dataset_path, dump_dir, desc_name, vis_th, pair_num, pair_name=None):
+    def __init__(self, dataset_path, dump_dir, desc_name, vis_th, pair_num, pair_name=None, config):
+        self.config = config
         self.data_path = dataset_path.rstrip("/") + "/"
         self.dump_dir = dump_dir
         self.desc_name = desc_name
@@ -62,9 +63,33 @@ class Sequence(object):
             dump_dict["mutual_nearest"] = mutual_nearest
             saveh5(dump_dict, dump_file)
 
+    def dump_double_desc_nn(self, ii, jj):
+        dump_file = os.path.join(self.intermediate_dir, "nn-{}-{}.h5".format(ii, jj))
+        if not os.path.exists(dump_file):
+            image_i, image_j = self.image_fullpath_list[ii], self.image_fullpath_list[jj]
+            desc_ii_1 = loadh5(image_i+'.'+self.desc_name+'.hdf5')["descriptors1"]
+            desc_ii_2 = loadh5(image_i+'.'+self.desc_name+'.hdf5')["descriptors2"]
+
+            desc_jj_1 = loadh5(image_j+'.'+self.desc_name+'.hdf5')["descriptors1"]
+            desc_jj_2 = loadh5(image_j+'.'+self.desc_name+'.hdf5')["descriptors2"]
+            desc_ii = [desc_ii_1, desc_ii_2]
+            desc_jj = [desc_jj_1, desc_jj_2]
+
+            idx_sort, ratio_test, mutual_nearest = multi_sub_desc_match(desc_ii, desc_jj, split_size)
+            # Dump to disk
+            dump_dict = {}
+            dump_dict["idx_sort"] = idx_sort
+            dump_dict["ratio_test"] = ratio_test
+            dump_dict["mutual_nearest"] = mutual_nearest
+            saveh5(dump_dict, dump_file)
+
+
     def dump_intermediate(self):
         for ii, jj in tqdm(self.pairs):
-            self.dump_nn(ii,jj)
+            if self.config.double_desc:
+                self.dump_double_desc_nn(ii, jj)
+            else:
+                self.dump_nn(ii,jj)
         print('Done')
 
     def unpack_K(self, geom):
@@ -154,3 +179,4 @@ class Sequence(object):
         return fullpath_list
 
     
+

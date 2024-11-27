@@ -1,5 +1,5 @@
 import argparse
-from dataset import Dataset
+from dataset import Dataset, D
 
 def str2bool(v):
     return v.lower() in ("true", "1")
@@ -15,17 +15,26 @@ parser.add_argument('--vis_th', type=int, default=50,
   help='visibility threshold')
 parser.add_argument('--pair_num', type=int, default=1000,
   help='pair num. 1000 for test seq')
+parser.add_argument('--desc_split', type=int, default=4,
+  help='sub descriptor parts')
+parser.add_argument('--min_matches', type=int, default=0,
+  help='minimum number of matches(Exclusive)')
+parser.add_argument('--double_desc', type=bool, default=False,
+  help='Using double desc')
 
 
-        
+
 if __name__ == "__main__":
     config = parser.parse_args()
     # dump yfcc test
     test_seqs = ['buckingham_palace','notre_dame_front_facade','reichstag', 'sacre_coeur']
+    double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift"]
+    config.double_desc = config.desc_name in double_descs
+ 
     yfcc_te = Dataset(config.raw_data_path+'yfcc100m/', config.dump_dir, 'yfcc-'+config.desc_name+'-test.hdf5', \
         test_seqs, 'test', config.desc_name, \
-        config.vis_th, config.pair_num, config.raw_data_path+'pairs/')
-    
+        config.vis_th, config.pair_num, config.raw_data_path+'pairs/', config)
+
     # # dump yfcc training seqs
     # with open('yfcc_train.txt','r') as ofp:
     #     train_seqs = ofp.read().split('\n')

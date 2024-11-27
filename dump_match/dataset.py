@@ -2,11 +2,12 @@ import h5py
 import os
 import pickle
 import numpy as np
-from sequence import Sequence
+from sequence import Sequence, SequenceDoubleDesc
+
 
 
 class Dataset(object):
-    def __init__(self, dataset_path, dump_dir, dump_file, seqs, mode, desc_name, vis_th, pair_num, pair_path=None):
+    def __init__(self, dataset_path, dump_dir, dump_file, seqs, mode, desc_name, vis_th, pair_num, pair_path=None, config=None ):
         self.dataset_path = dataset_path
         self.dump_dir = dump_dir
         self.dump_file = os.path.join(dump_dir, dump_file)
@@ -17,6 +18,7 @@ class Dataset(object):
         self.pair_num = pair_num
         self.pair_path = pair_path
         self.dump_data()
+        self.config = config
 
     def collect(self):
         data_type = ['xs','ys','Rs','ts', 'ratios', 'mutuals',\
@@ -50,11 +52,12 @@ class Dataset(object):
             dataset_path = self.dataset_path+'/'+seq+'/'+self.mode
             dump_dir = self.dump_dir+'/'+seq+'/'+self.desc_name+'/'+self.mode
             print(dataset_path)
-            dataset = Sequence(dataset_path, dump_dir, self.desc_name, self.vis_th, self.pair_num, pair_name)
+            dataset = Sequence(dataset_path, dump_dir, self.desc_name, self.vis_th, self.pair_num, pair_name, self.config)
             print('dump intermediate files.')
             dataset.dump_intermediate()
             print('dump matches.')
             dataset.dump_datasets()
         print('collect pkl.')
         self.collect()
-        
+
+
