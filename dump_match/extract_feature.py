@@ -45,7 +45,7 @@ def safe_double_desc(img, featureExtractor1, featureExtractor2, timeout: int = 3
             keypoints = np.take(kp_first, same[:,1],0)
             desc_1st = desc_first[ same[:, 1],:]
             desc_2nd = desc_second[ same[:, 0],:]
-            keypoints = cv2.KeyPoint_convert(keypoints)
+            # keypoints = cv2.KeyPoint_convert(keypoints)
             return_dict['result'] = (keypoints, desc_1st, desc_2nd)
 
         except Exception as e:
