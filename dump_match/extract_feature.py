@@ -58,7 +58,7 @@ def safe_double_desc(img, featureExtractor1, featureExtractor2, timeout: int = 3
     # Create and start the process
     process = mp.Process(
         target=worker,
-        args=(img1, img2, featureExtractor1, featureExtractor2, return_dict)
+        args=(img, featureExtractor1, featureExtractor2, return_dict)
     )
     process.start()
     process.join(timeout)
