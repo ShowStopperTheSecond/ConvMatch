@@ -13,7 +13,7 @@ from geom import load_geom, parse_geom, get_episym
 from transformations import quaternion_from_matrix
 
 class Sequence(object):
-    def __init__(self, dataset_path, dump_dir, desc_name, vis_th, pair_num, pair_name=None, config):
+    def __init__(self, dataset_path, dump_dir, desc_name, vis_th, pair_num, pair_name=None, config=None):
         self.config = config
         self.data_path = dataset_path.rstrip("/") + "/"
         self.dump_dir = dump_dir
