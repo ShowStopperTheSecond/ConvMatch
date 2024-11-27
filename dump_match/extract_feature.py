@@ -19,18 +19,62 @@ parser.add_argument('--num_kp', type=int, default='2000',
   help='keypoint number, default:2000')
 parser.add_argument('--suffix', type=str, default='sift-2000',
   help='suffix of filename, default:sift-2000')
+parser.add_argument("--feature_extractor", type=str, default="sift")
 
 
 
 class ExtractSIFT(object):
-  def __init__(self, num_kp, contrastThreshold=1e-5):
-    self.sift = cv2.SIFT_create(nfeatures=num_kp, contrastThreshold=contrastThreshold)
+  def __init__(self):
+    self.feature_extractor = cv2.SIFT_create()
 
   def run(self, img_path):
     img = cv2.imread(img_path)
-    cv_kp, desc = self.sift.detectAndCompute(img, None)
+    cv_kp, desc = self.feature_extractor.detectAndCompute(img, None)
     kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
     return kp, desc
+
+
+class ExtractORB(object):
+  def __init__(self):
+    self.feature_extractor = cv2.ORB_create()
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    cv_kp, desc = self.feature_extractor.detectAndCompute(img, None)
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc
+
+class ExtractBRISK(object):
+  def __init__(self):
+    self.feature_extractor = cv2.BRISK_create()
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    cv_kp, desc = self.feature_extractor.detectAndCompute(img, None)
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc
+
+class ExtractKAZE(object):
+  def __init__(self):
+    self.feature_extractor = cv2.KAZE_create()
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    cv_kp, desc = self.feature_extractor.detectAndCompute(img, None)
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc
+
+class ExtractAKAZE(object):
+  def __init__(self):
+    self.feature_extractor = cv2.AKAZE_create()
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    cv_kp, desc = self.feature_extractor.detectAndCompute(img, None)
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc
+
+
 
 
 def write_feature(pts, desc, filename):
@@ -43,7 +87,20 @@ def write_feature(pts, desc, filename):
 
 if __name__ == "__main__":
   opt = parser.parse_args()
-  detector = ExtractSIFT(opt.num_kp)   
+  if opt.feature_extractor == "sift":
+    detector = ExtractSIFT()
+  elif  opt.feature_extractor == "orb":
+    detector = ExtractORB()
+  elif  opt.feature_extractor == "kaze":
+    detector = ExtractKAZE()
+  elif  opt.feature_extractor == "akaze":
+    detector = ExtractAKAZE()
+  elif  opt.feature_extractor == "brisk":
+    detector = ExtractBRISK()
+  else:
+    print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
+    return -1
+
   # get image lists
   search = os.path.join(opt.input_path, opt.img_glob)
   listing = glob.glob(search)
