@@ -41,7 +41,7 @@ class ExtractALIKED(object):
     subprocess.run(["bash", "/tmp/aliked/custom_ops/build.sh"])
     sys.path.append("/tmp/aliked/")
     from nets.aliked import ALIKED
-    self.feature_extractor = ALIKED
+    self.feature_extractor = ALIKED()
     os.chdir(current_directory)
 
   def run(self, img_path):
