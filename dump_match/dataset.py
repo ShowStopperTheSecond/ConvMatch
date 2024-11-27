@@ -2,7 +2,7 @@ import h5py
 import os
 import pickle
 import numpy as np
-from sequence import Sequence, SequenceDoubleDesc
+from sequence import Sequence
 
 
 
