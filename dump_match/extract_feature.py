@@ -38,7 +38,7 @@ class ExtractALIKED(object):
     clone_repo("https://github.com/Shiaoming/ALIKED.git", "/tmp/aliked")
     current_directory = os.getcwd()
     os.chdir("/tmp/aliked/custom_ops")
-    subprocess.run("bash /tmp/aliked/custom_ops/build.sh")
+    subprocess.run(["bash", "/tmp/aliked/custom_ops/build.sh"])
     sys.path.append("/tmp/aliked/")
     from nets.aliked import ALIKED
     self.feature_extractor = ALIKED
