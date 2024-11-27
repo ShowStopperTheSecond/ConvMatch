@@ -253,6 +253,9 @@ if __name__ == "__main__":
   elif opt.feature_extractor in double_descs:
     for img_path in tqdm(listing):
       kp, desc1, desc2 = detector.run(img_path)
+      if kp is None:
+        print("couldn't extract features for this image")
+        continue
       save_path = img_path+'.'+opt.suffix+'.hdf5'
       write_feature_double_desc(kp, desc1, desc2, save_path)
 
