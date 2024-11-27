@@ -45,7 +45,7 @@ def safe_double_desc(img, featureExtractor1, featureExtractor2, timeout: int = 3
             keypoints = np.take(kp_first, same[:,1],0)
             desc_1st = desc_first[ same[:, 1],:]
             desc_2nd = desc_second[ same[:, 0],:]
-            keypoints = cv2.KeyPoint_convert(keypoints)
+            # keypoints = cv2.KeyPoint_convert(keypoints)
             return_dict['result'] = (keypoints, desc_1st, desc_2nd)
 
         except Exception as e:
@@ -79,6 +79,23 @@ def safe_double_desc(img, featureExtractor1, featureExtractor2, timeout: int = 3
         return return_dict['result'], None
         
     return None, "Unknown error occurred"
+
+class DoubleDesc(object):
+  def __init__(self, featureExtractor1, featureExtractor2):
+    self.featureExtractor1 = featureExtractor1
+    self.featureExtractor2 = featureExtractor2
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    result, error = safe_double_desc(img, self.featureExtractor1, self.featureExtractor2)
+    if error is None:
+      cv_kp , desc1, desc2 = result
+    else:
+      print(error)
+      return None, None, None
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc1, desc2
+
 
 
 
@@ -171,23 +188,6 @@ class ExtractAKAZE(object):
     kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
     return kp, desc
 
-
-
-class DoubleDesc(object):
-  def __init__(self, featureExtractor1, featureExtractor2):
-    self.featureExtractor1 = featureExtractor1
-    self.featureExtractor2 = featureExtractor2
-
-  def run(self, img_path):
-    img = cv2.imread(img_path)
-    result, error = safe_double_desc(img, self.featureExtractor1, self.featureExtractor2)
-    if error is None:
-      cv_kp , desc1, desc2 = result
-    else:
-      print(error)
-      return None, None, None
-    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
-    return kp, desc1, desc2
 
 
 
