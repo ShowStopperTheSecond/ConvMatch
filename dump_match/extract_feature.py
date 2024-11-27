@@ -129,6 +129,8 @@ if __name__ == "__main__":
     detector = ExtractAKAZE()
   elif  opt.feature_extractor == "brisk":
     detector = ExtractBRISK()
+  elif opt.feature_extractor == "aliked":
+    detector = ExtractALIKED()
   else:
     print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
 
