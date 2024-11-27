@@ -1,5 +1,5 @@
 import argparse
-from dataset import Dataset, D
+from dataset import Dataset
 
 def str2bool(v):
     return v.lower() in ("true", "1")
