@@ -174,7 +174,7 @@ class ExtractAKAZE(object):
 
 
 class DoubleDesc(object):
-  def __init__(self, feature_extractor1, featureExtractor2):
+  def __init__(self, featureExtractor1, featureExtractor2):
     self.featureExtractor1 = featureExtractor1
     self.featureExtractor2 = featureExtractor2
 
