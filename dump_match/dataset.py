@@ -17,8 +17,8 @@ class Dataset(object):
         self.vis_th = vis_th
         self.pair_num = pair_num
         self.pair_path = pair_path
-        self.dump_data()
         self.config = config
+        self.dump_data()
 
     def collect(self):
         data_type = ['xs','ys','Rs','ts', 'ratios', 'mutuals',\
