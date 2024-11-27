@@ -49,7 +49,7 @@ class ExtractALIKED(object):
     pred_ref = self.feature_extractor.run(img)
     kpts_ref = pred_ref['keypoints']
     desc_ref = pred_ref['descriptors']
-    return kp, desc
+    return kpts_ref, desc_ref
     
 
 
