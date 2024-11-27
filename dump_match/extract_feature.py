@@ -46,7 +46,7 @@ class ExtractALIKED(object):
 
   def run(self, img_path):
     img = cv2.imread(img_path)
-    pred_ref = model.run(img)
+    pred_ref = self.feature_extractor.run(img)
     kpts_ref = pred_ref['keypoints']
     desc_ref = pred_ref['descriptors']
     return kp, desc
