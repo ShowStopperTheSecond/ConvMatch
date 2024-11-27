@@ -19,29 +19,6 @@ def computeNN(desc_ii, desc_jj):
 
 
 
-
-
-def sub_desc_match(desc1, desc2, desc_size):
-    splitted_desc1 = torch.split(desc1, desc_size,1)
-    splitted_desc2 = torch.split(desc2, desc_size,1)
-    hist = np.zeros(shape=(len(desc1), len(desc2)))
-    for d1, d2 in zip (splitted_desc1, splitted_desc2):
-        matches = match.match_descriptors(d1, d2)
-        hist[matches[:, 0], matches[:, 1]] +=1
-    return hist
-    
-def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
-    hists = []
-    for d1, d2 in zip(desc1, desc2):
-#         print(d1.shape, d2.shape)
-        hist = sub_desc_match(d1, d2, desc_size)
-        hists.append(hist)
-    final_matches = hists[0]>min_match
-    if len(hists) >1: 
-        for h in hists[1:]:
-            final_matches = np.logical_and(final_matches, h>min_match)
-
-    return np.argwhere(final_matches)
     
 
 
@@ -64,7 +41,7 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     final_matches = hists[0]>min_match
     if len(hists) >1: 
         for h in hists[1:]:
-            final_matches = torch.logical_and(final_matches, h>min_match)
+            final_matches = np.logical_and(final_matches, h>min_match)
             
     final_matches = np.argwhere(final_matches)
     idx_sort = [final_matches[:, 0], final_matches[:, 1]]    
@@ -73,5 +50,4 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     return idx_sort, ratio_test, mutual_matches
     
 
-    
     
