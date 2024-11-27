@@ -36,10 +36,13 @@ parser.add_argument("--feature_extractor", type=str, default="sift")
 class ExtractALIKED(object):
   def __init__(self):
     clone_repo("https://github.com/Shiaoming/ALIKED.git", "/tmp/aliked")
-    subprocess.run("cd /tmp/aliked/custom_ops; bash /tmp/aliked/custom_ops/build.sh")
+    current_directory = os.getcwd()
+    os.chdir("/tmp/aliked/custom_ops")
+    subprocess.run("bash /tmp/aliked/custom_ops/build.sh")
     sys.path.append("/tmp/aliked/")
     from nets.aliked import ALIKED
     self.feature_extractor = ALIKED
+    os.chdir(current_directory)
 
   def run(self, img_path):
     img = cv2.imread(img_path)
