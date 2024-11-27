@@ -5,6 +5,17 @@ import glob
 import cv2
 import h5py
 from tqdm import tqdm
+import subprocess
+import sys
+import logging
+import argparse
+import numpy as np
+from copy import deepcopy
+
+def clone_repo(repo_url, local_path):
+    subprocess.run(['git', 'clone', repo_url, local_path])
+
+
 
 
 def str2bool(v):
@@ -20,6 +31,24 @@ parser.add_argument('--num_kp', type=int, default='2000',
 parser.add_argument('--suffix', type=str, default='sift-2000',
   help='suffix of filename, default:sift-2000')
 parser.add_argument("--feature_extractor", type=str, default="sift")
+
+
+class ExtractALIKED(object):
+  def __init__(self):
+    clone_repo("https://github.com/Shiaoming/ALIKED.git", "/tmp/aliked")
+    subprocess.run("cd /tmp/aliked/custom_ops; bash /tmp/aliked/custom_ops/build.sh")
+    sys.path.append("/tmp/aliked/")
+    from nets.aliked import ALIKED
+    self.feature_extractor = ALIKED
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    pred_ref = model.run(img)
+    kpts_ref = pred_ref['keypoints']
+    desc_ref = pred_ref['descriptors']
+    return kp, desc
+    
+
 
 
 
@@ -86,6 +115,9 @@ def write_feature(pts, desc, filename):
 
 
 if __name__ == "__main__":
+
+
+
   opt = parser.parse_args()
   if opt.feature_extractor == "sift":
     detector = ExtractSIFT()
