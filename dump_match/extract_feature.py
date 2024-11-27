@@ -11,9 +11,74 @@ import logging
 import argparse
 import numpy as np
 from copy import deepcopy
+import multiprocessing as mp
+from typing import Tuple, Any
+
 
 def clone_repo(repo_url, local_path):
     subprocess.run(['git', 'clone', repo_url, local_path])
+
+
+def safe_double_desc(img, featureExtractor1, featureExtractor2, timeout: int = 30):
+    """
+    Safely process a single image pair with feature extractors in a separate process.
+    
+    Args:
+        img:  image
+        featureExtractor1: First feature extractor
+        featureExtractor2: Second feature extractor
+        timeout: Maximum time in seconds to wait
+        
+    Returns:
+        Tuple of (results, error_message)
+        - If successful, results contains (kp1_first, desc1_first, ...) and error_message is None
+        - If failed, results is None and error_message contains the error
+    """
+    def worker(img, featureExtractor1, featureExtractor2, return_dict):
+        try:
+            kp_first, desc_first = featureExtractor1.detectAndCompute(img, None)
+            kp_second, desc_second = featureExtractor2.compute(img, kp_first)
+            k = np.array([k.pt for k in kp_first])
+            kk = np.array([k.pt for k in kp_second])
+            dist = np.sum(np.abs(k[None, :, :] - kk[:, None, :]), -1)
+            same = np.argwhere(dist == 0)
+            keypoints = np.take(kp_first, same[:,1],0)
+            desc_1st = desc1_first[ same[:, 1],:]
+            desc_2nd = desc1_second[ same[:, 0],:]
+            keypoints = cv2.KeyPoint_convert(keypoints)
+            return_dict['result'] = (keypoints, desc_1st, desc_2nd)
+
+        except Exception as e:
+            return_dict['error'] = str(e)
+
+    # Create a manager to share results between processes
+    manager = mp.Manager()
+    return_dict = manager.dict()
+    
+    # Create and start the process
+    process = mp.Process(
+        target=worker,
+        args=(img1, img2, featureExtractor1, featureExtractor2, return_dict)
+    )
+    process.start()
+    process.join(timeout)
+    
+    # Handle various failure cases
+    if process.is_alive():
+        process.terminate()
+        process.join()
+        return None, "Process timed out"
+    
+    if process.exitcode != 0:
+        return None, f"Process crashed with exit code {process.exitcode}"
+        
+    if 'error' in return_dict:
+        return None, return_dict['error']
+        
+    if 'result' in return_dict:
+        return return_dict['result'], None
+        
+    return None, "Unknown error occurred"
 
 
 
@@ -108,6 +173,19 @@ class ExtractAKAZE(object):
 
 
 
+class DoubleDesc(object):
+  def __init__(self, feature_extractor1, featureExtractor2):
+    self.featureExtractor1 = featureExtractor1
+    self.featureExtractor2 = featureExtractor2
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    cv_kp, desc1, desc2 = safe_double_desc(img, featureExtractor1, featureExtractor2)
+    kp = np.array([[_kp.pt[0], _kp.pt[1], _kp.size, _kp.angle] for _kp in cv_kp]) # N*4
+    return kp, desc1, desc2
+
+
+
 
 def write_feature(pts, desc, filename):
   with h5py.File(filename, "w") as ifp:
@@ -116,10 +194,21 @@ def write_feature(pts, desc, filename):
       ifp["keypoints"][:] = pts
       ifp["descriptors"][:] = desc
 
+def write_feature_double_desc(pts, desc1, desc2, filename):
+  with h5py.File(filename, "w") as ifp:
+      ifp.create_dataset('keypoints', pts.shape, dtype=np.float32)
+      ifp.create_dataset('descriptors1', desc1.shape, dtype=np.float32)
+      ifp.create_dataset('descriptors2', desc2.shape, dtype=np.float32)
+      ifp["keypoints"][:] = pts
+      ifp["descriptors1"][:] = desc1
+      ifp["descriptors2"][:] = desc2
+
 
 if __name__ == "__main__":
 
 
+  single_descs = ["sift", "orb", "kaze", "akaze", "brisk", "aliked"]
+  double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift"]
 
   opt = parser.parse_args()
   if opt.feature_extractor == "sift":
@@ -134,14 +223,32 @@ if __name__ == "__main__":
     detector = ExtractBRISK()
   elif opt.feature_extractor == "aliked":
     detector = ExtractALIKED()
+  elif opt.feature_extractor == "sift_brisk":
+    detector = DoubleDesc(cv2.SIFT_create(), cv2.BRISK_create())
+  elif opt.feature_extractor == "brisk_sift":
+    detector = DoubleDesc(cv2.BRISK_create(), cv2.SIFT_create())
+  elif opt.feature_extractor == "orb_brisk":
+    detector = DoubleDesc(cv2.ORB_create(), cv2.BRISK_create())
+  elif opt.feature_extractor == "orb_sift":
+    detector = DoubleDesc(cv2.ORB_create(), cv2.SIFT_create())
   else:
     print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
+
 
   # get image lists
   search = os.path.join(opt.input_path, opt.img_glob)
   listing = glob.glob(search)
 
-  for img_path in tqdm(listing):
-    kp, desc = detector.run(img_path)
-    save_path = img_path+'.'+opt.suffix+'.hdf5'
-    write_feature(kp, desc, save_path)
+  if opt.feature_extractor in single_descs:
+    for img_path in tqdm(listing):
+      kp, desc = detector.run(img_path)
+      save_path = img_path+'.'+opt.suffix+'.hdf5'
+      write_feature(kp, desc, save_path)
+
+  elif opt.feature_extractor in double_descs:
+    for img_path in tqdm(listing):
+      kp, desc1, desc2 = detector.run(img_path)
+      save_path = img_path+'.'+opt.suffix+'.hdf5'
+      write_feature_double_desc(kp, desc1, desc2, save_path)
+
+
