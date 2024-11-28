@@ -57,7 +57,6 @@ def computeNN(desc_ii, desc_jj):
 
 
 
-
 def sub_desc_match(desc1, desc2, desc_size):
     splitted_desc1 = np.split(desc1, desc_size,1)
     splitted_desc2 = np.split(desc2, desc_size,1)
@@ -82,11 +81,15 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     # idx_sort[final_matches[:, 0], 1] = final_matches[:, 1]
     # idx_sort = [idx_sort[:, 0], idx_sort[:, 1]]
     idx_sort = [final_matches[:, 0], final_matches[:, 1]]
-    # mutual_matches =  np.zeros(len(idx_sort[0]), np.bool_)
+    mutual_matches =  np.ones(len(idx_sort[0]), np.bool_)
     # mutual_matches[final_matches[:, 0]]=True
-    # ratio_test = mutual_matches.astype('float32')
+    ratio_test = np.logical_not(mutual_matches).astype('float32')
 
-    return idx_sort, None, None
+    return idx_sort, ratio_test, mutual_matches
+    
+
+    
+    
     
 
     
