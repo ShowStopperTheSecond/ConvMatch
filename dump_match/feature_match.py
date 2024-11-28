@@ -50,7 +50,7 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     idx_sort = [idx_sort[:, 0], idx_sort[:, 1]]
     mutual_matches =  np.zeros(len(idx_sort[0]), np.bool_)
     mutual_matches[final_matches[:, 0]]=True
-    ratio_test = mutual_matches.astype('float32')
+    ratio_test = np.logical_not(mutual_matches).astype('float32')
     return idx_sort, ratio_test, mutual_matches
     
 
