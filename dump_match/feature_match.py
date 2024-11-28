@@ -41,16 +41,19 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     final_matches = hists[0]>min_match
     if len(hists) >1: 
         for h in hists[1:]:
-            final_matches = torch.logical_and(final_matches, h>min_match)
+            final_matches = np.logical_and(final_matches, h>min_match)
             
     final_matches = np.argwhere(final_matches)
     idx_sort = np.c_[np.arange(len(d1)), np.arange(len(d1))]
     idx_sort[final_matches[:, 0], 1] = final_matches[:, 1]
+    idx_sort = [idx_sort[:, 0], idx_sort[:, 1]]
     ratio_test = np.ones(len(idx_sort))
-    mutual_matches =  np.zeros(len(idx_sort), np.bool_)
+    mutual_matches =  np.zeros(len(idx_sort[0]), np.bool_)
     mutual_matches[final_matches[:, 0]]=True
     return idx_sort, ratio_test, mutual_matches
     
 
+    
+    
     
     
