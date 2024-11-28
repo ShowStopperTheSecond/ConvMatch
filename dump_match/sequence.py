@@ -130,6 +130,7 @@ class Sequence(object):
         dt /= dtnorm
         nn_info = loadh5(os.path.join(self.intermediate_dir, "nn-{}-{}.h5".format(ii, jj)))
         idx_sort, ratio_test, mutual_nearest = nn_info["idx_sort"], nn_info["ratio_test"], nn_info["mutual_nearest"]
+        x1 = x1[idx_sort[0],:]
         x2 = x2[idx_sort[1],:]
         xs = np.concatenate([x1, x2], axis=1).reshape(1,-1,4)
         geod_d = get_episym(x1, x2, dR, dt)
