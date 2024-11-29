@@ -27,8 +27,8 @@ parser.add_argument('--double_desc', type=bool, default=False,
 if __name__ == "__main__":
     config = parser.parse_args()
     # dump yfcc test
-    # test_seqs = ['buckingham_palace','notre_dame_front_facade','reichstag', 'sacre_coeur']
-    test_seqs = ['buckingham_palace']
+    test_seqs = ['buckingham_palace','notre_dame_front_facade','reichstag', 'sacre_coeur']
+    # test_seqs = ['buckingham_palace']
 
     double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift"]
     config.double_desc = config.desc_name in double_descs
