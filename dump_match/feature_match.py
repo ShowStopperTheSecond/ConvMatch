@@ -1,6 +1,7 @@
 import torch
 import numpy as np
-from skimage.feature import match_descriptors
+# from skimage.feature import match_descriptors
+from skimage.feature import match
 
 def computeNN(desc_ii, desc_jj):
     desc_ii, desc_jj = torch.from_numpy(desc_ii).cuda(), torch.from_numpy(desc_jj).cuda()
