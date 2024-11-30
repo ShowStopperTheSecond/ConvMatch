@@ -65,8 +65,8 @@ def sub_desc_match(desc1, desc2, desc_size):
     hist = np.zeros(shape=(len(desc1), len(desc2)))
     for d1, d2 in zip (splitted_desc1, splitted_desc2):
         idx_sort, ratio_test, mutual_nearest = computeNN(d1, d2)
-        # hist[idx_sort[0][mutual_nearest], idx_sort[1][mutual_nearest]] +=1
-        hist[idx_sort[0], idx_sort[1]] +=1
+        hist[idx_sort[0][mutual_nearest], idx_sort[1][mutual_nearest]] +=1
+        # hist[idx_sort[0], idx_sort[1]] +=1
 
     return hist
 
