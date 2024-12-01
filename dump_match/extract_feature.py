@@ -156,7 +156,7 @@ class ExtractEnhancedALIKED(object):
     pred_ref = self.feature_extractor.run(img)
     kpts_ref = pred_ref['keypoints']
     desc_ref = pred_ref['descriptors'][: self.n_descriptors]
-    return kpts_ref, desc_ref
+    return kpts_ref, desc_ref[0], desc_ref[1]
     
 
 
