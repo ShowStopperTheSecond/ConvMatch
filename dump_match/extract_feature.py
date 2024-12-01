@@ -141,7 +141,7 @@ class ExtractEnhancedALIKED(object):
   def __init__(self, n_descriptors=2):
     clone_repo("https://github.com/ShowStopperTheSecond/EnhancedALIKED", "/tmp/EnhancedALIKED")
     current_directory = os.getcwd()
-    if not os.path.exists("/tmp/EnhancedALIKED/build"):
+    if not os.path.exists("/tmp/EnhancedALIKED/build/get_patches.cpython-310-x86_64-linux-gnu.so"):
       os.chdir("/tmp/EnhancedALIKED/custom_ops")
       subprocess.run(["bash", "/tmp/EnhancedALIKED/custom_ops/build.sh"])
     sys.path.append("/tmp/EnhancedALIKED/")
