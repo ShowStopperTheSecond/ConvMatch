@@ -238,7 +238,7 @@ if __name__ == "__main__":
 
 
   single_descs = ["sift", "orb", "kaze", "akaze", "brisk", "aliked"]
-  double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift"]
+  double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift", "double_aliked", "triple_aliked" ]
 
   opt = parser.parse_args()
   if opt.feature_extractor == "sift":
