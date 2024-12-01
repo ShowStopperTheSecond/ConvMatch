@@ -159,9 +159,6 @@ class ExtractEnhancedALIKED(object):
     return kpts_ref, desc_ref[0], desc_ref[1]
     
 
-
-
-
 class ExtractSIFT(object):
   def __init__(self):
     self.feature_extractor = cv2.SIFT_create()
