@@ -137,6 +137,26 @@ class ExtractALIKED(object):
     return kpts_ref, desc_ref
     
 
+class ExtractEnhancedALIKED(object):
+  def __init__(self, n_descriptors=2):
+    clone_repo("https://github.com/ShowStopperTheSecond/EnhancedALIKED", "/tmp/EnhancedALIKED")
+    current_directory = os.getcwd()
+    os.chdir("/tmp/EnhancedALIKED/custom_ops")
+    subprocess.run(["bash", "/tmp/EnhancedALIKED/custom_ops/build.sh"])
+    sys.path.append("/tmp/EnhancedALIKED/")
+    from nets.aliked import EnhancedALIKED
+    self.feature_extractor = EnhancedALIKED(n_limit=100000)
+    os.chdir(current_directory)
+    self.n_descriptors = n_descriptors
+
+  def run(self, img_path):
+    img = cv2.imread(img_path)
+    pred_ref = self.feature_extractor.run(img)
+    kpts_ref = pred_ref['keypoints']
+    desc_ref = pred_ref['descriptors'][: self.n_descriptors]
+    return kpts_ref, desc_ref
+    
+
 
 
 
@@ -240,9 +260,9 @@ if __name__ == "__main__":
   elif opt.feature_extractor == "orb_sift":
     detector = DoubleDesc(cv2.ORB_create(), cv2.SIFT_create())
   elif opt.feature_extractor == "double_aliked":
-    pass
+    detector = ExtractEnhancedALIKED()
   elif opt.feature_extractor == "triple_aliked":
-    pass
+    detector = ExtractEnhancedALIKED(n_descriptors=3)
   else:
     print(f"{opt.feature_extractor}: Feature extractor doesn't exist")
 

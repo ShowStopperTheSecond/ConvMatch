@@ -71,15 +71,6 @@ def sub_desc_match(desc1, desc2, desc_size):
     return hist
 
 
-# def sub_desc_match(desc1, desc2, desc_size):
-#     splitted_desc1 = np.split(desc1, desc_size,1)
-#     splitted_desc2 = np.split(desc2, desc_size,1)
-#     hist = np.zeros(shape=(len(desc1), len(desc2)))
-#     for d1, d2 in zip (splitted_desc1, splitted_desc2):
-#         matches = match.match_descriptors(d1, d2)
-#         hist[matches[:, 0], matches[:, 1]] +=1
-#     return hist
-
     
 def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     hists = []
