@@ -144,8 +144,9 @@ class ExtractEnhancedALIKED(object):
     os.chdir("/tmp/EnhancedALIKED/custom_ops")
     subprocess.run(["bash", "/tmp/EnhancedALIKED/custom_ops/build.sh"])
     sys.path.append("/tmp/EnhancedALIKED/")
+    os.chdir("/tmp/EnhancedALIKED/")
     from nets.aliked import EnhancedALIKED
-    self.feature_extractor = EnhancedALIKED(n_limit=100000)
+    self.feature_extractor = EnhancedALIKED(load_pretrained=True, n_limit=100000,)
     os.chdir(current_directory)
     self.n_descriptors = n_descriptors
 
