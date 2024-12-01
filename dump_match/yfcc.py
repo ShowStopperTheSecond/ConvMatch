@@ -30,7 +30,8 @@ if __name__ == "__main__":
     test_seqs = ['buckingham_palace','notre_dame_front_facade','reichstag', 'sacre_coeur']
     # test_seqs = ['buckingham_palace']
 
-    double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift"]
+    double_descs = ["sift_brisk", "brisk_sift", "orb_brisk", "orb_sift", "double_aliked", "triple_aliked" ]
+
     config.double_desc = config.desc_name in double_descs
  
     yfcc_te = Dataset(config.raw_data_path+'yfcc100m/', config.dump_dir, 'yfcc-'+config.desc_name+'-test.hdf5', \
