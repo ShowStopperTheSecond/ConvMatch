@@ -141,8 +141,9 @@ class ExtractEnhancedALIKED(object):
   def __init__(self, n_descriptors=2):
     clone_repo("https://github.com/ShowStopperTheSecond/EnhancedALIKED", "/tmp/EnhancedALIKED")
     current_directory = os.getcwd()
-    os.chdir("/tmp/EnhancedALIKED/custom_ops")
-    subprocess.run(["bash", "/tmp/EnhancedALIKED/custom_ops/build.sh"])
+    if not os.path.exists("/tmp/EnhancedALIKED/build"):
+      os.chdir("/tmp/EnhancedALIKED/custom_ops")
+      subprocess.run(["bash", "/tmp/EnhancedALIKED/custom_ops/build.sh"])
     sys.path.append("/tmp/EnhancedALIKED/")
     os.chdir("/tmp/EnhancedALIKED/")
     from nets.aliked import EnhancedALIKED
