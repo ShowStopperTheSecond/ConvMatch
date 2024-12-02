@@ -83,11 +83,27 @@ class Sequence(object):
             dump_dict["mutual_nearest"] = mutual_nearest
             saveh5(dump_dict, dump_file)
 
+    def dump_sub_desc_nn(self, ii, jj, split_size, min_match):
+        dump_file = os.path.join(self.intermediate_dir, "nn-{}-{}.h5".format(ii, jj))
+        if not os.path.exists(dump_file):
+            image_i, image_j = self.image_fullpath_list[ii], self.image_fullpath_list[jj]
+            desc_ii = loadh5(image_i+'.'+self.desc_name+'.hdf5')["descriptors"]
+            desc_jj = loadh5(image_j+'.'+self.desc_name+'.hdf5')["descriptors"]
+            idx_sort, ratio_test, mutual_nearest = multi_sub_desc_match([desc_ii], [desc_jj], split_size, min_match)
+            # Dump to disk
+            dump_dict = {}
+            dump_dict["idx_sort"] = idx_sort
+            dump_dict["ratio_test"] = ratio_test
+            dump_dict["mutual_nearest"] = mutual_nearest
+            saveh5(dump_dict, dump_file)
+
 
     def dump_intermediate(self):
         for ii, jj in tqdm(self.pairs):
             if self.config.double_desc:
                 self.dump_double_desc_nn(ii, jj, self.config.desc_split, self.config.min_matches)
+            elif self.config.sub_desc:
+                self.dump_sub_desc_nn(ii, jj, self.config.desc_split, self.config.min_matches)
             else:
                 self.dump_nn(ii,jj)
         print('Done')

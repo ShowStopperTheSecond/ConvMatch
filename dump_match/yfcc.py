@@ -21,7 +21,8 @@ parser.add_argument('--min_matches', type=int, default=0,
   help='minimum number of matches(Exclusive)')
 parser.add_argument('--double_desc', type=bool, default=False,
   help='Using double desc')
-
+parser.add_argument('--sub_desc', type=bool, default=False,
+  help='Using dub descriptors')
 
 
 if __name__ == "__main__":
