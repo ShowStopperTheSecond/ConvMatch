@@ -80,7 +80,9 @@ def multi_sub_desc_match(desc1, desc2, desc_size, min_match):
     final_matches = hists[0]>min_match
     if len(hists) >1: 
         for h in hists[1:]:
-            final_matches = np.logical_and(final_matches, h>min_match)
+            # final_matches = np.logical_and(final_matches, h>min_match)
+            final_matches = np.logical_or(final_matches, h>min_match)
+
             
     final_matches = np.argwhere(final_matches)
     # idx_sort = np.c_[np.arange(len(d1)), np.random.choice(np.arange(len(d2)), size=len(d1), replace=True)]
